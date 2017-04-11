@@ -166,8 +166,9 @@ A simple UIView subclass that can play a video and allows animations to be appli
 			videoPlayerLayer.videoGravity = videoGravity
 			
 			videoPlayerLayer.player?.addObserver(self, forKeyPath: "status", options: [], context: nil)
-			
-			status = .new
+            videoPlayerLayer.player?.addObserver(self, forKeyPath: "rate", options: [], context: nil)
+    
+            status = .new
 			newVideo?()
 		}
 	}
@@ -357,6 +358,16 @@ A simple UIView subclass that can play a video and allows animations to be appli
 				error?(videoError)
 			}
 		}
+        if player == videoPlayerLayer.player && keyPath == "rate" {
+            if player.rate == 0 && progress < 1 && UIApplication.shared.applicationState == .active {
+                print("Rate is zero")
+                let userInfo = [NSLocalizedDescriptionKey: "Error playing video."]
+                let videoError = NSError(domain: "com.andreisergiupitis.aspvideoplayer", code: 99, userInfo: userInfo)
+                
+                error?(videoError)
+            }
+        }
+    
 	}
 	
 	//MARK: - Private methods -
@@ -385,6 +396,7 @@ A simple UIView subclass that can play a video and allows animations to be appli
 	fileprivate func deinitObservers() {
 		NotificationCenter.default.removeObserver(self)
 		videoPlayerLayer.player?.removeObserver(self, forKeyPath: "status")
+        videoPlayerLayer.player?.removeObserver(self, forKeyPath: "rate")
 		if let observer = timeObserver {
 			videoPlayerLayer.player?.removeTimeObserver(observer)
 			timeObserver = nil
