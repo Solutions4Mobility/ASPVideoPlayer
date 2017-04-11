@@ -359,7 +359,7 @@ A simple UIView subclass that can play a video and allows animations to be appli
 			}
 		}
         if player == videoPlayerLayer.player && keyPath == "rate" {
-            if player.rate == 0 && progress < 1 && UIApplication.shared.applicationState == .active {
+            if player.rate == 0 && progress < 1 && progress == 0 && UIApplication.shared.applicationState == .active {
                 print("Rate is zero")
                 let userInfo = [NSLocalizedDescriptionKey: "Error playing video."]
                 let videoError = NSError(domain: "com.andreisergiupitis.aspvideoplayer", code: 99, userInfo: userInfo)
